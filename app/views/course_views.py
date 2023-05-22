@@ -1,15 +1,19 @@
+from datetime import datetime
+
+from flask import jsonify, make_response, request
 from flask_restful import Resource
-from ..schemas.course_schema import CourseSchema
-from flask import request, make_response, jsonify
+
 from app import api
+
 from ..entities.course import Course
+from ..schemas.course_schema import CourseSchema
 from ..services.course_service import (
     create_course,
-    list_courses,
+    delete_course,
     list_course_by_id,
+    list_courses,
     update_course,
 )
-from datetime import datetime
 
 
 class CourseList(Resource):
@@ -80,8 +84,14 @@ class CourseDetail(Resource):
             updated_course = list_course_by_id(id=id)
             return make_response(schema.jsonify(updated_course), 201)
 
-    def delete(self):
-        pass
+    def delete(self, id):
+        course = list_course_by_id(id)
+
+        if course is None:
+            return make_response(jsonify("Course not found"), 404)
+
+        delete_course(course=course)
+        return make_response(jsonify("Course deleted successfully"), 204)
 
 
 api.add_resource(CourseList, "/course")
