@@ -1,10 +1,10 @@
 from app import db
 
-from ..models import course_model
+from ..models.course_model import Course
 
 
 def create_course(course):
-    course_db = course_model.Course(
+    course_db = Course(
         name=course.name,
         description=course.description,
         created_at=course.created_at,
